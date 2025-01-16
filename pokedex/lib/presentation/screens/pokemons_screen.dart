@@ -4,8 +4,8 @@ import 'package:pokedex/domain/entities/pokemon.dart';
 import 'package:pokedex/infrastructure/datasource/pokeapi_pokemon_datasource.dart';
 import 'package:pokedex/infrastructure/repositories/pokeapi_pokemon_repository.dart';
 import 'package:pokedex/presentation/blocs/listing/pokemons_bloc.dart';
-import 'package:go_router/go_router.dart';
 import 'package:pokedex/presentation/delegates/pokemon_search_delegate.dart';
+import 'package:pokedex/presentation/widgets/pokemon/pokemon_grid.dart';
 
 class PokemonScreen extends StatefulWidget {
   static const name = "pokemon-screen";
@@ -95,51 +95,10 @@ class _PokemonScreenState extends State<PokemonScreen> {
     bool isLoading,
     ScrollController scrollController,
   ) {
-    return GridView.builder(
-      controller: scrollController,
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 3,
-        childAspectRatio: 0.8,
-        crossAxisSpacing: 8.0,
-        mainAxisSpacing: 8.0,
-      ),
-      itemCount: hasReachedMax ? pokemons.length : pokemons.length + 1,
-      itemBuilder: (context, index) {
-        if (index >= pokemons.length) {
-          return isLoading
-              ? const Center(child: CircularProgressIndicator())
-              : const SizedBox();
-        }
-        final pokemon = pokemons[index];
-
-        return GestureDetector(
-          onTap: () => context.push('/pokemons/pokemon/${pokemon.id}'),
-          child: Card(
-            elevation: 2.0,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Expanded(
-                    child: Image.network(
-                  pokemon.imageUrl,
-                  fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) {
-                    return const Icon(Icons.broken_image, size: 48);
-                  },
-                )),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(
-                    pokemon.name,
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
+    return PokemonGrid(
+        scrollController: scrollController,
+        hasReachedMax: hasReachedMax,
+        isLoading: isLoading,
+        pokemons: pokemons);
   }
 }
