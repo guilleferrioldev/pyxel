@@ -5,6 +5,7 @@ import 'package:pokedex/infrastructure/datasource/pokeapi_pokemon_datasource.dar
 import 'package:pokedex/infrastructure/repositories/pokeapi_pokemon_repository.dart';
 import 'package:pokedex/presentation/blocs/listing/pokemons_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:pokedex/presentation/delegates/pokemon_search_delegate.dart';
 
 class PokemonScreen extends StatefulWidget {
   static const name = "pokemon-screen";
@@ -50,7 +51,19 @@ class _PokemonScreenState extends State<PokemonScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Pokédex')),
+      appBar: AppBar(
+        title: const Text('Pokedex'),
+        actions: [
+          IconButton(
+              onPressed: () {
+                showSearch<Pokemon?>(
+                  context: context,
+                  delegate: PokemonSearchDelegate(),
+                );
+              },
+              icon: const Icon(Icons.search))
+        ],
+      ),
       body: BlocProvider<PokemonBloc>(
         create: (context) => _pokemonBloc,
         child: BlocBuilder<PokemonBloc, PokemonState>(
