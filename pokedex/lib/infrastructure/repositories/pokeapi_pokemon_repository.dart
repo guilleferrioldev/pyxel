@@ -10,4 +10,9 @@ class PokeapiPokemonRepository extends PokemonsRepository {
   Future<List<PokemonListing>> getPokemons({page = 0}) async {
     return datasource.getPokemons(page: page);
   }
+
+  @override
+  Future<Pokemon> getPokemon(String id) async {
+    return datasource.getPokemon(id);
+  }
 }

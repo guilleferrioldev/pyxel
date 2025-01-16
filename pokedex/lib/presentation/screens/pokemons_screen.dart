@@ -3,9 +3,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pokedex/domain/entities/pokemon.dart';
 import 'package:pokedex/infrastructure/datasource/pokeapi_pokemon_datasource.dart';
 import 'package:pokedex/infrastructure/repositories/pokeapi_pokemon_repository.dart';
-import 'package:pokedex/presentation/bloc/pokemons_bloc.dart';
+import 'package:pokedex/presentation/blocs/listing/pokemons_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 class PokemonScreen extends StatefulWidget {
+  static const name = "pokemon-screen";
+
   const PokemonScreen({super.key});
 
   @override
@@ -80,11 +83,10 @@ class _PokemonScreenState extends State<PokemonScreen> {
     ScrollController scrollController,
   ) {
     return GridView.builder(
-      controller: scrollController, // Usamos el ScrollController aquí
+      controller: scrollController,
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 3,
-        childAspectRatio:
-            0.8, // Ajustar según necesidad para que quepan imagen y texto
+        childAspectRatio: 0.8,
         crossAxisSpacing: 8.0,
         mainAxisSpacing: 8.0,
       ),
@@ -96,32 +98,32 @@ class _PokemonScreenState extends State<PokemonScreen> {
               : const SizedBox();
         }
         final pokemon = pokemons[index];
-        return Card(
-          // Agregamos un Card para mejor visualización
-          elevation: 2.0,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Expanded(
-                  // Para que la imagen ocupe el espacio disponible
-                  child: Image.network(
-                pokemon.imageUrl,
-                fit: BoxFit.cover, // Para que la imagen cubra el espacio
-                errorBuilder: (context, error, stackTrace) {
-                  return const Icon(Icons.broken_image,
-                      size: 48); // Icono si falla
-                },
-              )),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text(
-                  pokemon.name,
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(
-                      fontWeight: FontWeight.bold, fontSize: 18),
+
+        return GestureDetector(
+          onTap: () => context.push('/pokemons/pokemon/${pokemon.id}'),
+          child: Card(
+            elevation: 2.0,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Expanded(
+                    child: Image.network(
+                  pokemon.imageUrl,
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) {
+                    return const Icon(Icons.broken_image, size: 48);
+                  },
+                )),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    pokemon.name,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         );
       },
